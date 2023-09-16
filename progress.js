@@ -35,7 +35,7 @@ function exceptionDayCount(exceptions, only_weekdays) {
     return totalCount;
 }
 
-function getProgress(start, end, only_weekdays, exceptions, round = 2) {
+function getProgress(start, end, only_weekdays, exceptions) {
     const startDate = new Date(start);
     const endDate = new Date(end);
     const currentDate = new Date();
@@ -78,6 +78,6 @@ function getProgress(start, end, only_weekdays, exceptions, round = 2) {
         return 100;
     }
 
-    return (sinceStart / total * 100).toFixed(round);
+    return (sinceStart / total * 100);
 }
 

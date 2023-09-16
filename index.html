@@ -9,7 +9,12 @@
     <!-- Progress bar -->
     <div class="progress">
       <div class="progress__bar" id="progress__bar"></div>
-      <div class="progress__text" id="progress__text"></div>
+      <div class="progress__text">
+        <p id="progress__text"></p>
+        <p id="stop_notice">
+          Der Fortschritt hat angehalten, da Wochenende ist oder Ferien sind.
+        </p>
+      </div>
     </div>
   </body>
   <style>
@@ -52,14 +57,23 @@
       top: 0;
       left: 0;
       height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      place-items: center;
       color: #000;
       font-weight: bold;
       font-size: 15vh;
       padding: 0 10px;
       z-index: 5;
+    }
+
+    #stop_notice {
+      font-size: 2rem;
+      max-width: 80vw;
+      text-align: center;
+      display: none;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+      white-space: normal;
+      color: #bb0000;
     }
   </style>
   <script src="progress.js"></script>
@@ -67,7 +81,11 @@
     const start = "2023-09-11T09:45:00+02:00";
     const end = "2024-07-24T11:35:00+02:00";
     const only_weekdays = true;
-    rounding = 8;
+    const reload_delay = 1000;
+    const pause_threshold = 3000;
+    let last_progress_state = 0;
+    let progress_round = 0;
+    let rounding = 8;
     const except = [
       // Herbstferien 2023
       "2023-10-30",
@@ -128,8 +146,23 @@
     window.setInterval(() => {
       const progress = getProgress(start, end, only_weekdays, except, rounding);
       document.getElementById("progress__bar").style.width = progress + "%";
-      document.getElementById("progress__text").innerHTML = progress + "%";
-    }, 40);
+      document.getElementById("progress__text").innerHTML =
+        progress.toFixed(rounding) + "%";
+      // Paused message
+      progress_round++;
+      if (progress_round > 3000 / reload_delay) {
+        progress_round = 0;
+        if (last_progress_state == progress)
+          document.getElementById("stop_notice").style.display = "block";
+        else document.getElementById("stop_notice").style.display = "none";
+        last_progress_state = progress;
+      }
+    }, reload_delay);
+    // Init once
+    const progress = getProgress(start, end, only_weekdays, except, rounding);
+    document.getElementById("progress__bar").style.width = progress + "%";
+    document.getElementById("progress__text").innerHTML =
+      progress.toFixed(rounding) + "%";
   </script>
   <script>
     window.setTimeout(resize, 100);
