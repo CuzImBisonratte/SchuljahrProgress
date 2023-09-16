@@ -51,6 +51,7 @@
       background-color: #4caf50;
       transition: width 0.2s ease-in-out;
       z-index: -5;
+      transform: translate(-2px);
     }
 
     .progress__text {
@@ -156,6 +157,10 @@
           document.getElementById("stop_notice").style.display = "block";
         else document.getElementById("stop_notice").style.display = "none";
         last_progress_state = progress;
+      }
+      if (progress == 100) {
+        document.getElementById("progress__bar").style.transform =
+          "translate(0)";
       }
     }, reload_delay);
     // Init once
