@@ -144,7 +144,7 @@
       "2023-10-31",
     ];
 
-    window.setInterval(() => {
+    let num_loader = window.setInterval(() => {
       const progress = getProgress(start, end, only_weekdays, except, rounding);
       document.getElementById("progress__bar").style.width = progress + "%";
       document.getElementById("progress__text").innerHTML =
@@ -158,9 +158,13 @@
         else document.getElementById("stop_notice").style.display = "none";
         last_progress_state = progress;
       }
+      // If 100%
       if (progress == 100) {
+        document.getElementById("stop_notice").style.display = "none";
         document.getElementById("progress__bar").style.transform =
           "translate(0)";
+        document.getElementById("progress__text").innerHTML = "100%";
+        window.clearInterval(num_loader);
       }
     }, reload_delay);
     // Init once
